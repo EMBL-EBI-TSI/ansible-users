@@ -29,14 +29,14 @@
   no_log: "{{no_log}}"
 
 - name: SSH keys
-  authorized_key: user="{{item.0.username}}" key="{{item.1}}" key_options="{{item.0.ssh_key_opts|default(omit)}}"
+  authorized_key: user="{{item.0.username}}" key="{{item.1}}" exclusive=yes key_options="{{item.0.ssh_key_opts|default(omit)}}"
   with_subelements:
     - "{{users}}"
     - ssh_key
   tags: ['users','configuration','ssh_keys']
   no_log: "{{no_log}}"
 
-- name: Create ansible sudoers in temp directory
+- name: Create sudoers file and validate
   template: src=etc/sudoers.d/ansible.j2 dest=/etc/sudoers.d/ansible mode=0440 validate='visudo -cf %s'
   tags: ['users','configuration','sudoers']
   no_log: "{{no_log}}"
