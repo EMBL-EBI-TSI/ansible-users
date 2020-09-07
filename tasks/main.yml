@@ -27,6 +27,13 @@
   with_items: "{{users}}"
   tags: ['users','configuration']
   no_log: "{{no_log}}"
+  
+- name: Add exclusive key remove all other keys
+  authorized_key: user="{{item.username}}" key="{{item.exclusive_key}}" state=present exclusive=yes
+  tags: ['users','configuration','ssh_keys']
+  with_items: "{{users}}"
+  when: item.exclusive_key is defined
+  no_log: "{{no_log}}"
 
 - name: SSH keys
   authorized_key: user="{{item.0.username}}" key="{{item.1}}" key_options="{{item.0.ssh_key_opts|default(omit)}}"
